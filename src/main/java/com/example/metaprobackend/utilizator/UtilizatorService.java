@@ -1,5 +1,7 @@
 package com.example.metaprobackend.utilizator;
 
+import com.example.metaprobackend.Registration.Token.ConfirmationToken;
+import com.example.metaprobackend.Registration.Token.ConfirmationTokenService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,6 +22,7 @@ public class UtilizatorService implements UserDetailsService {
     private final UtilizatorRepository utilizatorRepository;
     private final static String USER_NOT_FOUND_MESSAGE = "UTILIZATORUL CU MAILUL %s  ESTE INEXISTENT";
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
 
 
     public List<Utilizator> getUtilizator() {
@@ -80,8 +84,27 @@ public class UtilizatorService implements UserDetailsService {
         utilizator.setPassword(codat);
         utilizatorRepository.save(utilizator);
 
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(15),
+                utilizator
 
-        return "merge si signn up e ljr";
+
+
+        );
+
+
+confirmationTokenService.saveConfirmationToken(confirmationToken);
+
+
+
+        return token;
+    }
+
+    public int enableUtilizator(String email) {
+        return utilizatorRepository.enableUtilizator(email);
     }
 
 }

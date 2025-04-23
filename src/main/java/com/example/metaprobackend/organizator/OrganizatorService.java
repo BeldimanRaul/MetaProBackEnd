@@ -1,7 +1,10 @@
 package com.example.metaprobackend.organizator;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,13 +13,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class OrganizatorService {
+@AllArgsConstructor
+public class OrganizatorService implements UserDetailsService {
     private final OrganizatorRepository organizatorRepository;
-
-    @Autowired
-    public OrganizatorService(OrganizatorRepository organizatorRepository) {
-        this.organizatorRepository = organizatorRepository;
-    }
 
     public List<Organizator> getOrganizatori() {
         return organizatorRepository.findAll();
@@ -77,4 +76,11 @@ public class OrganizatorService {
             organizator.setLinkBilete(linkBilete);
         }
     }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return organizatorRepository.findOrganizatorByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Organizatorul nu a fost gasit"));
+    }
+
+
 }

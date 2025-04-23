@@ -1,6 +1,8 @@
 package com.example.metaprobackend.utilizator;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,4 +16,15 @@ public interface UtilizatorRepository extends JpaRepository<Utilizator, UUID>{
 
     ///echivalentul in sql la SELECT *FROM utilizator WHERE email=?
     Optional<Utilizator> findUtilizatorByEmail(String email);
+
+
+
+    ///activam contul
+    @Transactional
+    @Modifying
+    @Query
+            ("UPDATE Utilizator u " +
+                    "SET u.enabled = TRUE WHERE u.email = ?1")
+    int enableUtilizator(String email);
+
 }
