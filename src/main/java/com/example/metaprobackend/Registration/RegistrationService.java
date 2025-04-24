@@ -29,7 +29,7 @@ public class RegistrationService {
         boolean isValidEmail = emailValidator.test(request.getEmail());
 
         if (!isValidEmail) {
-            throw new IllegalStateException("Email rău rău de tot");
+            throw new IllegalStateException("Email  rău de tot");
         }
 
         String token = utilizatorService.signUpUser(
@@ -147,3 +147,4 @@ public class RegistrationService {
     }
 
 }
+

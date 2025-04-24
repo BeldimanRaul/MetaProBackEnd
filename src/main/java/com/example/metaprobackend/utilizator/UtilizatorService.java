@@ -4,6 +4,8 @@ import com.example.metaprobackend.Registration.Token.ConfirmationToken;
 import com.example.metaprobackend.Registration.Token.ConfirmationTokenService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +29,12 @@ public class UtilizatorService implements UserDetailsService {
 
     public List<Utilizator> getUtilizator() {
         return utilizatorRepository.findAll();
+    }
+    public Utilizator getUtilizatorCurent() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return utilizatorRepository.findUtilizatorByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilizator inexistent"));
     }
 
     public void addNewUtilizator(Utilizator utilizator) {
@@ -106,5 +114,7 @@ confirmationTokenService.saveConfirmationToken(confirmationToken);
     public int enableUtilizator(String email) {
         return utilizatorRepository.enableUtilizator(email);
     }
+
+
 
 }

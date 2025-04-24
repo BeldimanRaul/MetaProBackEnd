@@ -36,8 +36,8 @@ public class OrganizatorService implements UserDetailsService {
     }
 
     public void deleteOrganizator(UUID organizatorId) {
-        boolean exists = organizatorRepository.existsById(organizatorId);
-        if (!exists) {
+        boolean este = organizatorRepository.existsById(organizatorId);
+        if (!este) {
             throw new IllegalStateException("Organizator cu id-ul " + organizatorId + " nu exista");
         }
         organizatorRepository.deleteById(organizatorId);
@@ -81,6 +81,7 @@ public class OrganizatorService implements UserDetailsService {
         return organizatorRepository.findOrganizatorByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Organizatorul nu a fost gasit"));
     }
+
 
 
 }

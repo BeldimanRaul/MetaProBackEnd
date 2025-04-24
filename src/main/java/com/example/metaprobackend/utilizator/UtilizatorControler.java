@@ -18,11 +18,16 @@ public class UtilizatorControler {
         this.utilizatorService = utilizatorService;
     }
 
-
-    @GetMapping
-    public List<Utilizator> getUtilizator  () {
-       return utilizatorService.getUtilizator();
+//
+//    @GetMapping
+//    public List<Utilizator> getUtilizator  () {
+//       return utilizatorService.getUtilizator();
+//    }
+    @GetMapping("/me")
+    public Utilizator getUtilizatorCurent() {
+        return utilizatorService.getUtilizatorCurent();
     }
+
 
 
     @PostMapping

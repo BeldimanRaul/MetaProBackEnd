@@ -1,80 +1,55 @@
 package com.example.metaprobackend.Securitate.Config;
 
-import com.example.metaprobackend.organizator.OrganizatorService;
-import com.example.metaprobackend.utilizator.UtilizatorService;
+import com.example.metaprobackend.Securitate.CustomAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final UtilizatorService utilizatorService;
-    private final OrganizatorService organizatorService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final CustomAuthenticationProvider customAuthenticationProvider;
 
-    public WebSecurityConfig(UtilizatorService utilizatorService,
-                             OrganizatorService organizatorService,
-                             BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.utilizatorService = utilizatorService;
-        this.organizatorService = organizatorService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    public WebSecurityConfig(CustomAuthenticationProvider customAuthenticationProvider) {
+        this.customAuthenticationProvider = customAuthenticationProvider;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/v*/registration/**",
-                                "/api/v*/organizator/registration/**",
-                                "/api/v*/utilizator/registration/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                )
+                .requestMatchers(
+                        "/api/v*/registration/**",
+                        "/api/v*/organizator/registration/**",
+                        "/api/v*/utilizator/registration/**"
+                ).permitAll()
+                .requestMatchers("/dashboard/utilizator").hasAuthority("USER")
+                .requestMatchers("/dashboard/organizator").hasAuthority("ORGANIZATOR")
+                .anyRequest().authenticated()
+        )
+
                 .formLogin(form -> form
+                        .defaultSuccessUrl("/welcome", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/api/v*/auth/logout")
+                        .logoutUrl("/logout")
                         .permitAll()
                 );
 
         return http.build();
     }
 
-
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder auth = http.getSharedObject(AuthenticationManagerBuilder.class);
-        auth.authenticationProvider(utilizatorAuthProvider());
-        auth.authenticationProvider(organizatorAuthProvider());
+        auth.authenticationProvider(customAuthenticationProvider);
         return auth.build();
-    }
-
-    @Bean
-    public DaoAuthenticationProvider utilizatorAuthProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(utilizatorService);
-        provider.setPasswordEncoder(bCryptPasswordEncoder);
-        return provider;
-    }
-
-    @Bean
-    public DaoAuthenticationProvider organizatorAuthProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(organizatorService);
-        provider.setPasswordEncoder(bCryptPasswordEncoder);
-        return provider;
     }
 }
