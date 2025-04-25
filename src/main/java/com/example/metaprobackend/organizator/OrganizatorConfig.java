@@ -1,5 +1,6 @@
 package com.example.metaprobackend.organizator;
 
+import com.example.metaprobackend.Registration.UserRole;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,8 @@ public class OrganizatorConfig {
                     "eventim123",
                     "eventim@example.com",
                     "Organizator de evenimente culturale",
-                    "https://eventim.ro"
+                    "https://eventim.ro",
+                    UserRole.ORGANIZATOR
             );
 
             Organizator ticketmaster = new Organizator(
@@ -24,7 +26,8 @@ public class OrganizatorConfig {
                     "ticketmaster123",
                     "ticketmaster@example.com",
                     "Organizator evenimente internationale",
-                    "https://ticketmaster.ro"
+                    "https://ticketmaster.ro",
+                    UserRole.ORGANIZATOR
             );
 
             organizatorRepository.saveAll(

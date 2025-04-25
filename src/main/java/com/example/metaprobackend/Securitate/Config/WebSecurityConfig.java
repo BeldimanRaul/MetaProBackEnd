@@ -28,23 +28,28 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
+        http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/v*/auth/**",
                                 "/api/v*/registration/**",
-                                "/api/v*/utilizator/registration/**",
                                 "/api/v*/organizator/registration/**",
-                                "/api/v*/utilizator/registration/confirm",
-                                "/api/v*/organizator/registration/confirm"
+                                "/api/v*/utilizator/registration/**",
+                                "/api/v*/organizator/auth/**",
+                                "/api/v*/utilizator/auth/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .formLogin(form -> form.permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/api/v*/auth/logout")
+                        .permitAll()
+                );
+
+        return http.build();
     }
+
 
     @Bean
     public DaoAuthenticationProvider utilizatorAuthProvider() {

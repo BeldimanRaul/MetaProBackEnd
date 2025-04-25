@@ -1,4 +1,4 @@
-package com.example.metaprobackend.organizator.registration;
+package com.example.metaprobackend.Registration;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

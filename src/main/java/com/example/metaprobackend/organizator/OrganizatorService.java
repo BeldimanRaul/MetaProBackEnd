@@ -1,12 +1,18 @@
 package com.example.metaprobackend.organizator;
 
+import com.example.metaprobackend.Registration.Token.ConfirmationToken;
+import com.example.metaprobackend.Registration.Token.ConfirmationTokenService;
+import com.example.metaprobackend.utilizator.Utilizator;
+import com.example.metaprobackend.utilizator.UtilizatorRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -16,9 +22,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OrganizatorService implements UserDetailsService {
     private final OrganizatorRepository organizatorRepository;
+    private final String ORG_NOT_FOUND_MESSAGE = "ORGANIZATORUL CU MAILUL %s  ESTE INEXISTENT";
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService2;
 
     public List<Organizator> getOrganizatori() {
         return organizatorRepository.findAll();
+
+
     }
 
     public void addNewOrganizator(Organizator organizator) {
@@ -80,6 +91,42 @@ public class OrganizatorService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return organizatorRepository.findOrganizatorByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Organizatorul nu a fost gasit"));
+    }
+
+    public String signUpUser(Organizator organizator) {
+
+        boolean este = organizatorRepository.findOrganizatorByEmail(organizator.getEmail()).isPresent();
+        if (este) {
+            return ("Email folosit de alt utilizator");
+
+        }
+        String codat2 = bCryptPasswordEncoder.encode(organizator.getPassword());
+
+
+        organizator.setPassword(codat2);
+        organizatorRepository.save(organizator);
+
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(15),
+                organizator
+
+
+        );
+
+
+
+        confirmationTokenService2.saveConfirmationToken(confirmationToken);
+
+
+
+        return token;
+    }
+
+    public int enableOrganizator(String email) {
+        return organizatorRepository.enableOrganizator(email);
     }
 
 

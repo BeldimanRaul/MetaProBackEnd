@@ -12,7 +12,7 @@ public class ORegistrationController2 {
     private final ORegistrationService2 ORegistrationService2;
 
     @PostMapping
-    public String register(@RequestBody com.example.metaprobackend.organizator.registration.ORegistrationRequest2 request) {
+    public String register(@RequestBody ORegistrationRequest2 request) {
         return ORegistrationService2.register(request);
     }
 

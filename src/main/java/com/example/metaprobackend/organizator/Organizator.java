@@ -1,22 +1,20 @@
 package com.example.metaprobackend.organizator;
 
+import com.example.metaprobackend.Registration.UserRole;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 @Getter
 @Setter
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table (name = "organizatori")
 public class Organizator  implements UserDetails {
@@ -36,8 +34,10 @@ public class Organizator  implements UserDetails {
     private String email;
     private String descriere;
     private String linkBilete;
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
     private Boolean locked = false;
-    private Boolean enabled = false;
+    private Boolean enabled=false;
 
     public Organizator(UUID id, String username, String password, String email, String descriere, String linkBilete) {
         this.id = id;
@@ -48,22 +48,19 @@ public class Organizator  implements UserDetails {
         this.linkBilete = linkBilete;
     }
 
-    public Organizator() {
-
-    }
-
-    public Organizator(String username, String password, String email, String descriere, String linkBilete) {
+    public Organizator(String username, String password, String email, String descriere, String linkBilete,UserRole userRole) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.descriere = descriere;
         this.linkBilete = linkBilete;
+        this.userRole = userRole;
     }
 
 
 
     public String getUsername() {
-        return username;
+        return email;
     }
 
 
@@ -117,6 +114,7 @@ public class Organizator  implements UserDetails {
     public void setLinkBilete(String linkBilete) {
         this.linkBilete = linkBilete;
     }
+
 
     @Override
     public String toString() {

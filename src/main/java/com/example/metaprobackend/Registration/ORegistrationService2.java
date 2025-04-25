@@ -4,95 +4,109 @@ import com.example.metaprobackend.Email.EmailSender;
 import com.example.metaprobackend.Registration.Token.ConfirmationToken;
 import com.example.metaprobackend.Registration.Token.ConfirmationTokenService;
 import com.example.metaprobackend.organizator.Organizator;
-import com.example.metaprobackend.organizator.OrganizatorRepository;
-
+import com.example.metaprobackend.organizator.OrganizatorService;
+import com.example.metaprobackend.utilizator.Utilizator;
+import com.example.metaprobackend.utilizator.UtilizatorService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class ORegistrationService2 {
 
-    private final OrganizatorRepository organizatorRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final EmailValidator emailValidator;
+    private final OrganizatorService organizatorService;
+
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
-    private final EmailValidator emailValidator;
 
-    public String register(com.example.metaprobackend.organizator.registration.ORegistrationRequest2 request) {
-        boolean valid = emailValidator.test(request.getEmail());
-        if (!valid) {
-            throw new IllegalStateException("Email invalid");
+
+    public String register(ORegistrationRequest2 request) {
+
+        boolean isValidEmail = emailValidator.test(request.getEmail());
+
+        if (!isValidEmail) {
+            return("Email  rău de tot");
         }
 
-        if (organizatorRepository.findOrganizatorByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalStateException("Email deja folosit");
-        }
+        String token = organizatorService.signUpUser(
+                new Organizator(
+                        request.getUsername(),
+                        request.getPassword(),
+                        request.getEmail(),
+                        request.getDescriere(),
+                        request.getLinkBilete(),
+                        UserRole.ORGANIZATOR
+                )
 
-        String hashedPass = bCryptPasswordEncoder.encode(request.getPassword());
+        );
 
-        Organizator organizator = new Organizator(
-                request.getUsername(),
-                hashedPass,
+
+
+
+        String link ="http://localhost:8080/api/v1/organizator/registration/confirm?token=" + token;
+        emailSender.send(
                 request.getEmail(),
-                request.getDescriere(),
-                request.getLinkBilete()
-
-        );
-
-        organizatorRepository.save(organizator);
-
-        String token = UUID.randomUUID().toString();
-        ConfirmationToken confirmationToken = new ConfirmationToken(
-                token,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15),
-                organizator
-        );
-
-
-
-        confirmationTokenService.saveConfirmationToken(confirmationToken);
-
-        String link = "http://localhost:8080/api/v1/organizator/registration/confirm?token=" + token;
-        emailSender.send(request.getEmail(), buildEmail(request.getUsername(), link));
-
+                buildEmail(request.getUsername(),link));
         return token;
     }
+
+
+
     @Transactional
     public String confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getToken(token)
-                .orElseThrow(() -> new IllegalStateException("Token invalid"));
-
+                .orElseThrow(() ->
+                        new IllegalStateException("token nu a fost gasit"));
         if (confirmationToken.getConfirmat() != null) {
-            return ("Contul este deja confirmat");
-        }
 
-        if (confirmationToken.getExpirat().isBefore(LocalDateTime.now())) {
-            return ("Token expirat");
+            return "mail confirmat deja";
         }
-
+        LocalDateTime expirat = confirmationToken.getExpirat();
+        if (expirat.isBefore(LocalDateTime.now())) {
+            return "token expirat ";
+        }
         confirmationToken.setConfirmat(LocalDateTime.now());
-        confirmationTokenService.setConfirmat(token);
 
-        Organizator organizator = confirmationToken.getOrganizator();
-        if (organizator != null) {
-            organizator.setEnabled(true);
-            organizatorRepository.save(organizator);
-            return "Contul de organizator a fost confirmat cu succes!";
-        }
+        organizatorService.enableOrganizator(
+                confirmationToken.getOrganizator().getEmail());
+        return "confirmat";
 
-        throw new IllegalStateException("Nu s-a găsit organizator pentru acest token");
     }
-
 
     private String buildEmail(String name, String link) {
-        return "<p>Salut " + name + ", confirmă contul tău de organizator: <a href=\"" + link + "\">Click aici</a></p>";
+        return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;padding:0;color:#0b0c0c;background-color:#f4f4f4\">" +
+                "<table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">" +
+                "  <tr>" +
+                "    <td align=\"center\" style=\"padding: 40px 0; background-color: #0b0c0c;\">" +
+                "      <h1 style=\"color: white; font-size: 28px; margin: 0;\">Confirmă adresa ta de email</h1>" +
+                "    </td>" +
+                "  </tr>" +
+                "  <tr>" +
+                "    <td align=\"center\">" +
+                "      <table role=\"presentation\" width=\"100%\" style=\"max-width: 600px; background-color: white; padding: 40px; border-radius: 8px;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">" +
+                "        <tr>" +
+                "          <td style=\"font-size: 18px; line-height: 1.6; color: #0b0c0c;\">" +
+                "            <p style=\"margin: 0 0 20px 0;\">Salut <strong>" + name + "</strong>,</p>" +
+                "            <p style=\"margin: 0 0 20px 0;\">Îți mulțumim pentru înregistrare. Te rugăm să dai click pe butonul de mai jos pentru a-ți activa contul:</p>" +
+                "            <p style=\"margin: 20px 0;\">" +
+                "              <a href=\"" + link + "\" style=\"background-color: #1D70B8; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;\">Activează contul</a>" +
+                "            </p>" +
+                "            <p style=\"margin: 20px 0;\">Link-ul este valabil timp de 15 minute.</p>" +
+                "            <p style=\"margin: 0;\">Pe curând,</p>" +
+                "            <p style=\"margin: 0;\"><em>Echipa MetaproEvents</em></p>" +
+                "          </td>" +
+                "        </tr>" +
+                "      </table>" +
+                "    </td>" +
+                "  </tr>" +
+                "</table>" +
+                "</div>";
     }
+
 }
+
