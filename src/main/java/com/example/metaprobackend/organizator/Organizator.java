@@ -39,6 +39,7 @@ public class Organizator  implements UserDetails {
     private Boolean locked = false;
     private Boolean enabled=false;
 
+
     public Organizator(UUID id, String username, String password, String email, String descriere, String linkBilete) {
         this.id = id;
         this.username = username;

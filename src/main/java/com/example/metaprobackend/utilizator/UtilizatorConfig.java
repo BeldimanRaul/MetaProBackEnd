@@ -1,5 +1,5 @@
 package com.example.metaprobackend.utilizator;
-
+import org.springframework.validation.Validator;
 import com.example.metaprobackend.Registration.UserRole;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

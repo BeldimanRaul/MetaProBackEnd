@@ -58,7 +58,7 @@ public class ConfirmationToken {
         boolean utilizatorSet = utilizator != null;
         boolean organizatorSet = organizator != null;
         if (utilizatorSet == organizatorSet) {
-            throw new IllegalStateException("Tokenul trebuie să fie asociat fie cu un utilizator, fie cu un organizator.");
+            throw new IllegalStateException("Tokenul trebuie sa fie asociat fie cu un utilizator, fie cu un organizator.");
         }
     }
 

@@ -16,6 +16,7 @@ public class Eveniment {
     @GeneratedValue(
             strategy = GenerationType.UUID
 
+
     )
     private UUID id;
     private String nume;

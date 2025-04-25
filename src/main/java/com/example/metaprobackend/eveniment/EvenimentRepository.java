@@ -9,4 +9,5 @@ import java.util.UUID;
 @Repository
 public interface EvenimentRepository extends JpaRepository<Eveniment, UUID> {
     Optional<Eveniment> findEvenimentByNume(String nume);
+
 }

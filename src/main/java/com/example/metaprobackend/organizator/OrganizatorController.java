@@ -12,6 +12,7 @@ public class OrganizatorController {
 
     private final OrganizatorService organizatorService;
 
+
     @Autowired
     public OrganizatorController(OrganizatorService organizatorService) {
         this.organizatorService = organizatorService;

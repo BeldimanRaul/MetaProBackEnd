@@ -1,5 +1,5 @@
 package com.example.metaprobackend.Registration;
-
+import org.springframework.validation.Validator;
 import com.example.metaprobackend.Email.EmailSender;
 import com.example.metaprobackend.Registration.Token.ConfirmationToken;
 import com.example.metaprobackend.Registration.Token.ConfirmationTokenService;

@@ -1,7 +1,7 @@
 package com.example.metaprobackend.Registration;
 
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Validator;
+
 
 import java.util.function.Predicate;
 @Service

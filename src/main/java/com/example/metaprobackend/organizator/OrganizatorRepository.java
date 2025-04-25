@@ -15,7 +15,8 @@ public interface OrganizatorRepository extends JpaRepository<Organizator, UUID> 
     Optional<Organizator> findOrganizatorByUsername(String username);
 
 
-    ///activam contul
+
+    ///activam ontul
     @Transactional
     @Modifying
     @Query

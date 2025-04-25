@@ -97,7 +97,7 @@ public class OrganizatorService implements UserDetailsService {
 
         boolean este = organizatorRepository.findOrganizatorByEmail(organizator.getEmail()).isPresent();
         if (este) {
-            return ("Email folosit de alt utilizator");
+            return ("Email folositt de alt utilizator");
 
         }
         String codat2 = bCryptPasswordEncoder.encode(organizator.getPassword());

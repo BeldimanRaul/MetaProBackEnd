@@ -31,6 +31,7 @@ public class EmailService implements EmailSender {
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
             LOGGER.error("nu sa trimis mailul", e);
+
             throw new IllegalStateException("nu sa trimis mailul");
         }
 

@@ -1,5 +1,5 @@
 package com.example.metaprobackend.utilizator;
-
+import org.springframework.validation.Validator;
 import com.example.metaprobackend.Registration.UserRole;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;

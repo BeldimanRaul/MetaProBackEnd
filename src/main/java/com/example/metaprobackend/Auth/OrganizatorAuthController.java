@@ -32,4 +32,5 @@ public class OrganizatorAuthController {
 
         return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
     }
+
 }

@@ -1,5 +1,5 @@
 package com.example.metaprobackend.utilizator;
-
+import org.springframework.validation.Validator;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
