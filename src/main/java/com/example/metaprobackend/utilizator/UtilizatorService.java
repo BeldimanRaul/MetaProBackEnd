@@ -83,7 +83,7 @@ public class UtilizatorService implements UserDetailsService {
 
         boolean este = utilizatorRepository.findUtilizatorByEmail(utilizator.getEmail()).isPresent();
         if (este) {
-            throw new IllegalStateException("Email folosit de alt utilizator");
+          return("Email folosit de alt utilizator");
 
         }
         String codat = bCryptPasswordEncoder.encode(utilizator.getPassword());

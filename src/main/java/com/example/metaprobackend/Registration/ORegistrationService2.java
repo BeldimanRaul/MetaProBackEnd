@@ -42,6 +42,7 @@ public class ORegistrationService2 {
                 request.getEmail(),
                 request.getDescriere(),
                 request.getLinkBilete()
+
         );
 
         organizatorRepository.save(organizator);
@@ -70,11 +71,11 @@ public class ORegistrationService2 {
                 .orElseThrow(() -> new IllegalStateException("Token invalid"));
 
         if (confirmationToken.getConfirmat() != null) {
-            throw new IllegalStateException("Contul este deja confirmat");
+            return ("Contul este deja confirmat");
         }
 
         if (confirmationToken.getExpirat().isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("Token expirat");
+            return ("Token expirat");
         }
 
         confirmationToken.setConfirmat(LocalDateTime.now());
