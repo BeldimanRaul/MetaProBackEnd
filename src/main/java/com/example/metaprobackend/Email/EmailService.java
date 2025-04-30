@@ -26,13 +26,13 @@ public class EmailService implements EmailSender {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(email, true);
             helper.setTo(to);
-            helper.setSubject("confirma emailul pustiule");
+            helper.setSubject("Confirmare cont MetaEvents");
             helper.setFrom("metapro@backend.com");
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            LOGGER.error("nu sa trimis mailul", e);
+            LOGGER.error("nu s-a trimis mailul", e);
 
-            throw new IllegalStateException("nu sa trimis mailul");
+            throw new IllegalStateException("nu s-a trimis mailul");
         }
 
     }

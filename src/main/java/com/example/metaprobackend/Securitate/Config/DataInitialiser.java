@@ -45,10 +45,10 @@ public class DataInitialiser {
 
             Eveniment festival = new Eveniment(
                     "Festival de vară",
-                    "Un festival cu muzică live, food trucks și distracție",
+                    "Un festival cu muzica live, food trucks și distractie",
                     LocalDate.of(2021, 8, 25),
                     LocalDate.of(2023, 11, 23),
-                    "Brașov, Piața Sfatului",
+                    "Brasov, Piața Sfatului",
                     "Festival",
                     33.4F
             );
@@ -56,7 +56,7 @@ public class DataInitialiser {
 
             Eveniment workshop = new Eveniment(
                     "Workshop Java",
-                    "Atelier de programare intensiv pentru începători",
+                    "Atelier de programare intensiv pentru incepatori",
                     LocalDate.of(2021, 8, 25),
                     LocalDate.of(2023, 11, 23),
                     "Universitatea Transilvania, Corpul N",

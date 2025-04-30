@@ -28,6 +28,7 @@ public class UtilizatorControler {
 
 
 
+
     @PostMapping
     public void registerNewUtilizator(@RequestBody Utilizator utilizator) {
         utilizatorService.addNewUtilizator(utilizator);

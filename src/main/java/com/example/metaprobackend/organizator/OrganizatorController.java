@@ -1,6 +1,7 @@
 package com.example.metaprobackend.organizator;
 
 import com.example.metaprobackend.eveniment.Eveniment;
+import com.example.metaprobackend.utilizator.Utilizator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,13 @@ public class OrganizatorController {
     @GetMapping
     public List<Organizator> getOrganizatori() {
         return organizatorService.getOrganizatori();
+    }
+
+
+
+    @GetMapping("/me")
+    public Organizator getUtilizatorCurent() {
+        return organizatorService.getOrganizatorCurent();
     }
 
     @PostMapping
