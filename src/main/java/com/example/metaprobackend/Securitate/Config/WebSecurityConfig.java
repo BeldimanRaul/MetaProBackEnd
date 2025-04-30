@@ -28,8 +28,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
+                .csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/v*/registration/**",
                                 "/api/v*/organizator/registration/**",
@@ -37,14 +36,12 @@ public class WebSecurityConfig {
                                 "/api/v*/organizator/auth/**",
                                 "/api/v*/utilizator/auth/**"
                         ).permitAll()
+                        .requestMatchers("/api/v1/utilizator/**").hasAuthority("USER")
+                        .requestMatchers("/api/v1/organizator/**").hasAuthority("ORGANIZATOR")
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(form -> form.permitAll())
-                .logout(logout -> logout
-                        .logoutUrl("/api/v*/auth/logout")
-                        .permitAll()
-                );
+
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

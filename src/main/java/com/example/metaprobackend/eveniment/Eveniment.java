@@ -1,7 +1,11 @@
 package com.example.metaprobackend.eveniment;
 
+import com.example.metaprobackend.organizator.Organizator;
+import com.example.metaprobackend.utilizator.Utilizator;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -26,6 +30,14 @@ public class Eveniment {
     private String locatie;
     private String tipEveniment;
     private Float pretBilet;
+
+    @ManyToOne
+    @JoinColumn(name = "organizator_id")
+    private Organizator organizator;
+
+    @ManyToMany(mappedBy = "evenimente")
+    private Set<Utilizator> participanti = new HashSet<>();
+
 
     public Eveniment() {
     }
@@ -130,5 +142,9 @@ public class Eveniment {
                 ", tipEveniment='" + tipEveniment + '\'' +
                 ", pretBilet=" + pretBilet +
                 '}';
+    }
+
+    public void setOrganizator(Organizator organizatorCurent) {
+        this.organizator = organizatorCurent;
     }
 }

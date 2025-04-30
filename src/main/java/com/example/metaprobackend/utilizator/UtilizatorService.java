@@ -2,6 +2,8 @@ package com.example.metaprobackend.utilizator;
 
 import com.example.metaprobackend.Registration.Token.ConfirmationToken;
 import com.example.metaprobackend.Registration.Token.ConfirmationTokenService;
+import com.example.metaprobackend.eveniment.Eveniment;
+import com.example.metaprobackend.eveniment.EvenimentRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UtilizatorService implements UserDetailsService {
     private final UtilizatorRepository utilizatorRepository;
+    private final EvenimentRepository evenimentRepository;
     private final static String USER_NOT_FOUND_MESSAGE = "UTILIZATORUL CU MAILUL %s  ESTE INEXISTENT";
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
@@ -115,6 +118,22 @@ confirmationTokenService.saveConfirmationToken(confirmationToken);
         return utilizatorRepository.enableUtilizator(email);
     }
 
+
+
+    public void adaugaEvenimentLaUtilizator(UUID evenimentId) {
+        Utilizator utilizator = getUtilizatorCurent();
+        Eveniment eveniment = evenimentRepository.findById(evenimentId)
+                .orElseThrow(() -> new RuntimeException("Eveniment inexistent"));
+
+        utilizator.getEvenimente().add(eveniment);
+        utilizatorRepository.save(utilizator);
+    }
+
+    public void stergeEvenimentDeLaUtilizator(UUID evenimentId) {
+        Utilizator utilizator = getUtilizatorCurent();
+        utilizator.getEvenimente().removeIf(ev -> ev.getId().equals(evenimentId));
+        utilizatorRepository.save(utilizator);
+    }
 
 
 }

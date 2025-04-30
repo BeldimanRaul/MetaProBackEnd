@@ -1,5 +1,8 @@
 package com.example.metaprobackend.eveniment;
 
+import com.example.metaprobackend.organizator.Organizator;
+import com.example.metaprobackend.organizator.OrganizatorRepository;
+import com.example.metaprobackend.organizator.OrganizatorService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +17,14 @@ import java.util.UUID;
 public class EvenimentService {
 
     private final EvenimentRepository evenimentRepository;
+    private final OrganizatorService organizatorService;
+
 
     @Autowired
-    public EvenimentService(EvenimentRepository evenimentRepository) {
+    public EvenimentService(EvenimentRepository evenimentRepository, OrganizatorService organizatorService ) {
         this.evenimentRepository = evenimentRepository;
+        this.organizatorService = organizatorService;
+
     }
 
     public List<Eveniment> getEvenimente() {
@@ -30,6 +37,7 @@ public class EvenimentService {
         if (evenimentOptional.isPresent()) {
             throw new IllegalStateException("Numele evenimentului este deja folosit");
         }
+        eveniment.setOrganizator(organizatorService.getOrganizatorCurent());
         evenimentRepository.save(eveniment);
     }
 

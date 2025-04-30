@@ -1,4 +1,5 @@
 package com.example.metaprobackend.utilizator;
+import com.example.metaprobackend.eveniment.Eveniment;
 import org.springframework.validation.Validator;
 import com.example.metaprobackend.Registration.UserRole;
 import jakarta.persistence.*;
@@ -12,9 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -44,6 +44,14 @@ public class Utilizator implements UserDetails {
 
     @Transient
     private Integer varsta;
+
+    @ManyToMany
+    @JoinTable(
+            name = "utilizator_eveniment",
+            joinColumns = @JoinColumn(name = "utilizator_id"),
+            inverseJoinColumns = @JoinColumn(name = "eveniment_id")
+    )
+    private Set<Eveniment> evenimente = new HashSet<>();
 
 
 

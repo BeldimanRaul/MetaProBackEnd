@@ -1,15 +1,15 @@
 package com.example.metaprobackend.organizator;
 
 import com.example.metaprobackend.Registration.UserRole;
+import com.example.metaprobackend.eveniment.Eveniment;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -38,6 +38,9 @@ public class Organizator  implements UserDetails {
     private UserRole userRole;
     private Boolean locked = false;
     private Boolean enabled=false;
+
+    @OneToMany(mappedBy = "organizator", cascade = CascadeType.ALL)
+    private Set<Eveniment> evenimenteOrganizate = new HashSet<>();
 
 
     public Organizator(UUID id, String username, String password, String email, String descriere, String linkBilete) {

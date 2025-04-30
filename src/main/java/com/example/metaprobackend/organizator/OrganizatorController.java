@@ -1,9 +1,11 @@
 package com.example.metaprobackend.organizator;
 
+import com.example.metaprobackend.eveniment.Eveniment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -42,4 +44,9 @@ public class OrganizatorController {
             @RequestParam(required = false) String linkBilete) {
         organizatorService.updateOrganizator(organizatorId, username, email, descriere, linkBilete);
     }
+    @GetMapping("/evenimente")
+    public Set<Eveniment> getEvenimenteOrganizator() {
+        return organizatorService.getOrganizatorCurent().getEvenimenteOrganizate();
+    }
+
 }

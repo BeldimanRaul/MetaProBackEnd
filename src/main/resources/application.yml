@@ -4,7 +4,6 @@ spring:
     username: postgres
     password: caragiale17
 
-
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -32,3 +31,6 @@ spring:
       password: admin
     basic:
       enabled: false
+
+jwt:
+  secret: supersecrettokenkeyformetaprojwt2025!

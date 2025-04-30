@@ -1,5 +1,7 @@
 package com.example.metaprobackend.eveniment;
 
+import com.example.metaprobackend.organizator.Organizator;
+import com.example.metaprobackend.organizator.OrganizatorRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +13,17 @@ import java.util.List;
 public class EvenimentConfig {
 
     @Bean
-    CommandLineRunner commandLineRunnerEveniment(EvenimentRepository evenimentRepository) {
+    CommandLineRunner commandLineRunnerEveniment(
+            EvenimentRepository evenimentRepository,
+            OrganizatorRepository organizatorRepository
+    ) {
         return args -> {
+
+            Organizator eventim = organizatorRepository
+                    .findOrganizatorByEmail("eventim@example.com")
+                    .orElseThrow(() -> new IllegalStateException("Organizatorul nu există"));
+
+
             Eveniment festival = new Eveniment(
                     "Festival de vară",
                     "Un festival cu muzică live, food trucks și distracție",
@@ -22,6 +33,7 @@ public class EvenimentConfig {
                     "Festival",
                     33.4F
             );
+            festival.setOrganizator(eventim);
 
             Eveniment workshop = new Eveniment(
                     "Workshop Java",
@@ -32,6 +44,7 @@ public class EvenimentConfig {
                     "Workshop",
                     50.0F
             );
+            workshop.setOrganizator(eventim);
 
             evenimentRepository.saveAll(List.of(festival, workshop));
         };

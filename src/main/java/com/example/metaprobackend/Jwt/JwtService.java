@@ -1,9 +1,8 @@
 package com.example.metaprobackend.Jwt;
 
-
-import org.springframework.validation.Validator;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "supersecrettokenkeyformetaprojwt2025!"; // 256-bit (32 caractere)
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -56,6 +56,6 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 }

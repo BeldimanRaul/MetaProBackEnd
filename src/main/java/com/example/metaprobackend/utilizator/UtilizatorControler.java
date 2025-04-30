@@ -1,8 +1,11 @@
 package com.example.metaprobackend.utilizator;
 
+import com.example.metaprobackend.eveniment.Eveniment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -17,11 +20,7 @@ public class UtilizatorControler {
         this.utilizatorService = utilizatorService;
     }
 
-//
-//    @GetMapping
-//    public List<Utilizator> getUtilizator  () {
-//       return utilizatorService.getUtilizator();
-//    }
+
     @GetMapping("/me")
     public Utilizator getUtilizatorCurent() {
         return utilizatorService.getUtilizatorCurent();
@@ -47,6 +46,22 @@ public class UtilizatorControler {
             @RequestParam (required = false) String name,
             @RequestParam (required = false) String email){
                 utilizatorService.updateUtilizator(utilizatorId,name,email);
+    }
+    @PostMapping("/eveniment/{evenimentId}")
+    public ResponseEntity<?> participaLaEveniment(@PathVariable UUID evenimentId) {
+        utilizatorService.adaugaEvenimentLaUtilizator(evenimentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/eveniment/{evenimentId}")
+    public ResponseEntity<?> stergeEvenimentDinLista(@PathVariable UUID evenimentId) {
+        utilizatorService.stergeEvenimentDeLaUtilizator(evenimentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/evenimente")
+    public Set<Eveniment> getEvenimenteUtilizator() {
+        return utilizatorService.getUtilizatorCurent().getEvenimente();
     }
 
 

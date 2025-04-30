@@ -8,10 +8,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,7 +23,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UtilizatorService utilizatorService;
     private final OrganizatorService organizatorService;
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -46,12 +45,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = null;
 
+
             try {
-                userDetails = utilizatorService.loadUserByUsername(username);
-            } catch (Exception e) {
+                userDetails = organizatorService.loadUserByUsername(username);
+            } catch (UsernameNotFoundException e1) {
                 try {
-                    userDetails = organizatorService.loadUserByUsername(username);
-                } catch (Exception ignored) {}
+                    userDetails = utilizatorService.loadUserByUsername(username);
+                } catch (UsernameNotFoundException e2) {
+
+                }
             }
 
             if (userDetails != null && jwtService.isTokenValid(jwt, userDetails)) {
