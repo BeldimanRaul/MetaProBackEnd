@@ -1,10 +1,12 @@
 package com.example.metaprobackend.utilizator;
 
 import com.example.metaprobackend.eveniment.Eveniment;
+import com.example.metaprobackend.organizator.Organizator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,6 +21,15 @@ public class UtilizatorControler {
     public UtilizatorControler(UtilizatorService utilizatorService) {
         this.utilizatorService = utilizatorService;
     }
+
+
+    @GetMapping
+    public List<Utilizator> getUtilizatori() {
+        return utilizatorService.getUtilizator();
+    }
+
+
+
 
 
     @GetMapping("/me")

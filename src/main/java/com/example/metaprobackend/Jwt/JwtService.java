@@ -36,7 +36,7 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("authorities", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList())); // "USER" sau "ORGANIZATOR"
+                .collect(Collectors.toList()));
 
         return Jwts.builder()
                 .setClaims(claims)

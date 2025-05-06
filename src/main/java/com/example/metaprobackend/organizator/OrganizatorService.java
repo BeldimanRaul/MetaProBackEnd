@@ -1,6 +1,7 @@
 package com.example.metaprobackend.organizator;
 
 import com.example.metaprobackend.Registration.Token.ConfirmationToken;
+import com.example.metaprobackend.Registration.Token.ConfirmationTokenRepository;
 import com.example.metaprobackend.Registration.Token.ConfirmationTokenService;
 import com.example.metaprobackend.utilizator.Utilizator;
 import com.example.metaprobackend.utilizator.UtilizatorRepository;
@@ -27,6 +28,7 @@ public class OrganizatorService implements UserDetailsService {
     private final String ORG_NOT_FOUND_MESSAGE = "ORGANIZATORUL CU MAILUL %s  ESTE INEXISTENT";
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService2;
+    private final ConfirmationTokenRepository confirmationTokenRepository;
 
     public List<Organizator> getOrganizatori() {
         return organizatorRepository.findAll();
@@ -53,6 +55,7 @@ public class OrganizatorService implements UserDetailsService {
         if (!este) {
             throw new IllegalStateException("Organizator cu id-ul " + organizatorId + " nu exista");
         }
+        confirmationTokenRepository.deleteByOrganizatorId(organizatorId);
         organizatorRepository.deleteById(organizatorId);
     }
 
