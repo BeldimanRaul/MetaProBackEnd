@@ -1,4 +1,5 @@
 package com.example.metaprobackend.utilizator;
+import com.example.metaprobackend.organizator.Organizator;
 import org.springframework.validation.Validator;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,6 +17,7 @@ public interface UtilizatorRepository extends JpaRepository<Utilizator, UUID>{
 
     ///echivalentul in sql la SELECT *FROM utilizator WHERE email=?
     Optional<Utilizator> findUtilizatorByEmail(String email);
+
 
 
 

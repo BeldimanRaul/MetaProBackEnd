@@ -36,8 +36,9 @@ public class WebSecurityConfig {
                                 "/api/v*/organizator/auth/**",
                                 "/api/v*/utilizator/auth/**"
                         ).permitAll()
-                        .requestMatchers("/api/v1/utilizator/**").hasAuthority("USER")
-                        .requestMatchers("/api/v1/organizator/**").hasAuthority("ORGANIZATOR")
+
+                                .requestMatchers("/api/v1/utilizator/**").authenticated()
+                                .requestMatchers("/api/v1/organizator/**").authenticated()
                         .anyRequest().authenticated()
                 )
 

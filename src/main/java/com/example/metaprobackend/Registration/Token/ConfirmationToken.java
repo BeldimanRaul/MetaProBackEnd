@@ -62,10 +62,5 @@ public class ConfirmationToken {
         }
     }
 
-    @Transient
-    public String getAssociatedName() {
-        if (utilizator != null) return utilizator.getEmail();
-        if (organizator != null) return organizator.getEmail();
-        return "N/A";
-    }
+
 }

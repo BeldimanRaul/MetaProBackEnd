@@ -29,4 +29,10 @@ public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationT
     @Query("DELETE FROM ConfirmationToken ct WHERE ct.organizator.id = :organizatorId")
     void deleteByOrganizatorId(@Param("organizatorId") UUID organizatorId);
 
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM ConfirmationToken ct WHERE ct.utilizator.id = :utilizatorId")
+    void deleteByUtilizatorId(@Param("utilizatorId") UUID utilizatorId);
+
 }

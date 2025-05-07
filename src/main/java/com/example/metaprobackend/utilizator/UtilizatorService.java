@@ -1,6 +1,7 @@
 package com.example.metaprobackend.utilizator;
 
 import com.example.metaprobackend.Registration.Token.ConfirmationToken;
+import com.example.metaprobackend.Registration.Token.ConfirmationTokenRepository;
 import com.example.metaprobackend.Registration.Token.ConfirmationTokenService;
 import com.example.metaprobackend.eveniment.Eveniment;
 import com.example.metaprobackend.eveniment.EvenimentRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Validator;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -28,11 +30,13 @@ public class UtilizatorService implements UserDetailsService {
     private final static String USER_NOT_FOUND_MESSAGE = "UTILIZATORUL CU MAILUL %s  ESTE INEXISTENT";
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenRepository confirmationTokenRepository;
 
 
     public List<Utilizator> getUtilizator() {
         return utilizatorRepository.findAll();
     }
+
     public Utilizator getUtilizatorCurent() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -53,6 +57,7 @@ public class UtilizatorService implements UserDetailsService {
         if (!exista) {
             throw new IllegalStateException("Utilizator inexistent");
         }
+        confirmationTokenRepository.deleteByUtilizatorId(utilizatorId);
         utilizatorRepository.deleteById(utilizatorId);
     }
 
@@ -86,7 +91,7 @@ public class UtilizatorService implements UserDetailsService {
 
         boolean este = utilizatorRepository.findUtilizatorByEmail(utilizator.getEmail()).isPresent();
         if (este) {
-          return("Email folosit de alt utilizator");
+            return ("Email folosit de alt utilizator");
 
         }
         String codat = bCryptPasswordEncoder.encode(utilizator.getPassword());
@@ -103,12 +108,10 @@ public class UtilizatorService implements UserDetailsService {
                 utilizator
 
 
-
         );
 
 
-confirmationTokenService.saveConfirmationToken(confirmationToken);
-
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
 
 
         return token;
@@ -117,7 +120,6 @@ confirmationTokenService.saveConfirmationToken(confirmationToken);
     public int enableUtilizator(String email) {
         return utilizatorRepository.enableUtilizator(email);
     }
-
 
 
     public void adaugaEvenimentLaUtilizator(UUID evenimentId) {
